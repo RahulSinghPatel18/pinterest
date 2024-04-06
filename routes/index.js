@@ -12,25 +12,6 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.get('/profile', isLoggedIn, async function(req, res, next) {
-  let user = await userModel.findOne({
-    username: req.session.passport.user,
-  })
-  .populate("posts")
-  console.log(user)
-  res.render('profile', {user});
-});
-
-router.post('/fileupload', isLoggedIn, upload.single('image'), async function(req, res, next) {
-  let user = await userModel.findOne({
-    username: req.session.passport.user})
-    user.dp = req.file.filename;
-   await user.save();
-   res.redirect('/profile')
-});
-
-
-
 router.post('/register', function(req, res, next) {
   const userData = new userModel({
     username: req.body.username,
@@ -44,8 +25,6 @@ router.post('/register', function(req, res, next) {
     })
   })
 });
-
-
 router.get('/login', function(req, res, next) {
   res.render('login', { error: req.flash('error')});
 });
@@ -60,23 +39,43 @@ failureFlash: true,
 });
 
 
+
+router.get('/logout', function(req, res, next) {
+  req.logout(function(err){
+   if(err) { return next(err); }
+   res.redirect('/login');
+  })
+ });
+ 
+ 
+ function isLoggedIn(req, res, next){
+   if(req.isAuthenticated()) return next();
+   res.redirect('/login');
+ }
+ 
+
+router.post('/fileupload', isLoggedIn, upload.single('image'), async function(req, res, next) {
+  let user = await userModel.findOne({
+    username: req.session.passport.user})
+    user.dp = req.file.filename;
+   await user.save();
+   res.redirect('/profile')
+});
+
+router.get('/profile', isLoggedIn, async function(req, res, next) {
+  let user = await userModel.findOne({
+    username: req.session.passport.user,
+  })
+  .populate("posts")
+  console.log(user)
+  res.render('profile', {user});
+});
+
+
 router.get('/feed', function(req, res, next) {
   res.render('feed');
 });
 
-
-router.get('/logout', function(req, res, next) {
- req.logout(function(err){
-  if(err) { return next(err); }
-  res.redirect('/login');
- })
-});
-
-
-function isLoggedIn(req, res, next){
-  if(req.isAuthenticated()) return next();
-  res.redirect('/login');
-}
 
 router.post('/upload',isLoggedIn, upload.single('file'), async (req, res) => {
 if(!req.file){
