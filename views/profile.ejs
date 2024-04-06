@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/profile.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+<div id="cover"></div>
+
+<div id="content">
+  <form id="uploadform" hidden action="/fileupload" method="post" enctype="multipart/form-data">
+    <input type="file" name="image">
+  </form>
+  <div id="pic">
+    <i id="pencilicon" class="ri-pencil-line"></i>
+    <img id="user-avatar" width="120" height="120" src="/images/uploads/<%= user.dp %>" alt="Avatar">
+  </div>
+  <p id="fullname"><%= user.fullname %></p>
+  <p id="username">@<%= user.username %></p>
+  <p id="userdescription">Photos from all over the world</p>
+  <div id="user-general-values">
+    <p>
+      <span>231</span>
+      <span>Posts</span>
+        </p>
+    <div class="line"></div>
+    <p>
+      <span>531</span>
+      <span>Followers</span>
+        </p>
+    <div class="line"></div>
+    <p>
+      <span>123</span>
+      <span>Following</span>
+        </p>
+  </div>
+  <p id="follow-btn">Follow</p>
+  <form  action="/upload" method="post" enctype="multipart/form-data"" >
+    <input style=" padding: 10px; border: 1px solid rgb(247, 118, 148);" type="text" name="imagetext">
+    <input type="file" name="file">
+    <button id="btn" type="submit" style="padding: 8px 19px;background-color: #f66993;border-radius: 20px; border:1px solid blue; font-size: 18px;
+    ">Upload</button>
+  </form>
+
+  <div id="postcontent">
+    <div id="user-publications">
+      <% user.posts.forEach((post)=>{ %>
+       <div class="cards">
+         <div class="card-items">
+         <img src="/images/uploads/<%= post.image %>" alt="">
+         <h6><%= post.postText %></h6>
+       </div>
+       </div>
+      <% }) %>
+     </div>
+  </div>
+ 
+</div>
+
+<a class="logout" href="/logout">Logout</a>
+
+<script>
+document.querySelector('#pencilicon').addEventListener('click', function(){
+document.querySelector('#uploadform input').click()
+
+})
+document.querySelector('#uploadform input').addEventListener('change', function(){
+  document.querySelector('#uploadform ').submit()
+})
+
+
+
+
+</script>
+</body>
+</html>
